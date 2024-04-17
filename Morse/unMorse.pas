@@ -153,6 +153,7 @@ begin
   end;
 end;
 
+//Verifica se existe algum valor que é inválido
 function TfrmMorse.ExisteValorInvalidoMorse(oMemo: TMemo): Boolean;
 var
   i, j : integer;
