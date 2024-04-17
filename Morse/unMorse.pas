@@ -22,15 +22,27 @@ type
     function EncontrarMorse(letra:Char) : String;
     function DecodeMorse(sMorse:String) : String;
     function ExisteCaracterEspecial(oMemo : TMemo): Boolean;
+    function ExisteValorInvalidoMorse(oMemo : TMemo): Boolean;
     procedure LimpaMemo(oMemo : TMemo);
   public
     { Public declarations }
   end;
 
 const
-  aHexa: array [1..36] of Char =('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0');
-  aMorse: array [1..36]of String = ('.-','-...','-.-.','-..','.','..-.','--.','....','..','.---','-.-','.-..','--','-.','---','.--.','--.-','.-.','...','-','..-','...-','.--','-..-','-.--','--..','.----','..---','...--','....-','.....','-....','--...','---..','----.','-----');
-  aCaracterEsp: array [0..18] of String = ('Ã', 'Á', 'Â', 'Ã', 'Ä','É', 'Ê', 'Ë','Í', 'Î', 'Ï','Ó', 'Ô', 'Õ', 'Ö','Ú', 'Û', 'Ü','Ç');
+  aHexa: array [1..36] of Char =('A','B','C','D','E','F','G','H','I','J','K','L',
+                                 'M','N','O','P','Q','R','S','T','U','V','W','X',
+                                 'Y','Z','1','2','3','4','5','6','7','8','9','0');
+  aMorse: array [1..36]of String = ('.-','-...','-.-.','-..','.','..-.','--.','....',
+                                    '..','.---','-.-','.-..','--','-.','---','.--.','--.-',
+                                    '.-.','...','-','..-','...-','.--','-..-','-.--','--..',
+                                    '.----','..---','...--','....-','.....','-....','--...',
+                                    '---..','----.','-----');
+  aCaracterEsp: array [0..37] of Char = ('Ã', 'Á', 'Â', 'Ã', 'Ä','É', 'Ê', 'Ë','Í',
+                                           'Î', 'Ï','Ó', 'Ô', 'Õ', 'Ö','Ú', 'Û', 'Ü',
+                                           'Ç','ã', 'á', 'â', 'ã', 'ä', 'é', 'ê','ë',
+                                           'í', 'î', 'ï', 'ó', 'ô', 'õ', 'ö', 'ú', 'û', 'ü', 'ç');
+  aValoresMorse: array [0..3] of Char = ('.', '-', '/', ' ');
+
 var
   frmMorse: TfrmMorse;
 
@@ -89,7 +101,7 @@ var
   sLinha, sMorse, sJuntatexto: String;
 begin
   LimpaMemo(mmoSaida);
-  if ExisteCaracterEspecial(mmoEntrada) then
+  if ExisteValorInvalidoMorse(mmoEntrada) then
   begin
     ShowMessage('Caracter Especial encontrado. Ajuste seu texto e tente novamente');
     mmoEntrada.SetFocus;
@@ -137,6 +149,35 @@ begin
     begin
       Result := True;
       Break;
+    end;
+  end;
+end;
+
+function TfrmMorse.ExisteValorInvalidoMorse(oMemo: TMemo): Boolean;
+var
+  i, j : integer;
+  sMemotexto : string;
+  bControle : boolean;
+begin
+  sMemotexto := oMemo.Text;
+
+  Result := False;
+
+  for i := 1 to Length(sMemotexto) do
+  begin
+    bControle := True;
+    for j := Low(aValoresMorse) to High(aValoresMorse) do
+    begin
+      if aValoresMorse[j] = sMemotexto[i] then
+      begin
+        bControle := False;
+        Break;
+      end;
+    end;
+    if bControle then
+    begin
+      Result := True;
+      exit;
     end;
   end;
 end;
